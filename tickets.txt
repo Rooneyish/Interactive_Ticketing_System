@@ -1,4 +1,4 @@
-Id, Title, Status, Priority
+tickets = Id, Title, Status, Priority
 1,Login issue,open,high
 2,Password reset,closed,medium
 3,Email not working,open,high
@@ -6,3 +6,9 @@ Id, Title, Status, Priority
 5,UI bug,open,medium
 6,Server crash,closed,high
 7,Feature request,open,low
+8,Keyboard Not Working,open,medium
+9,System Failed Error,open,high
+10,Server Crash,closed,high
+11,Game Crash,open,low
+12,Plane Crash,open,high
+13,Big Bug ,open,low
