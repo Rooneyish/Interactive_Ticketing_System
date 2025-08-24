@@ -1,9 +1,7 @@
-tickets = Id, Title, Status, Priority
+Id, Title, Status, Priority
 1,Login issue,open,high
-3,Email not working,open,high
-4,pc freeze,closed,low
 5,System Crash Out,medium,open
-6,Server crash,closed,high
+6,Server crash,open,high
 7,Feature request,open,low
 8,Keyboard Not Working,open,medium
 9,System Failed Error,open,high

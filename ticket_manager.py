@@ -175,5 +175,3 @@ def update_ticket(ticket_id):
         print("Ticket not found.")
     
     return updated
-
-update_ticket(4)
