@@ -81,3 +81,38 @@ def add_tickets():
     file.close()
 
     print("Ticket added successfully!")
+
+def delete_ticket(ticket_id):
+    ticket_id = str(ticket_id).strip()
+
+    table = collection()
+    if not table:
+        print("No data found.")
+        return False
+    
+    header = table[0]
+    found = False
+    kept_rows = [header]
+
+    for row in table[1:]:
+        if len(row) == 0:
+            continue
+        
+        if row[0].strip() == ticket_id:
+            found = True
+            continue
+        
+        kept_rows.append(row)
+    
+    if not found:
+        print(f'Ticket {ticket_id} not found.')
+        return False
+    
+    file = open('tickets.txt', 'w')
+    for row in kept_rows:
+        file.write(",".join(row)+"\n")
+
+    print(f'Ticket {ticket_id} deleted successfully.')
+    return True
+
+delete_ticket(2)

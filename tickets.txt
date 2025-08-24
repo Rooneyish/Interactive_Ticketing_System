@@ -1,6 +1,5 @@
 tickets = Id, Title, Status, Priority
 1,Login issue,open,high
-2,Password reset,closed,medium
 3,Email not working,open,high
 4,Slow system,closed,low
 5,UI bug,open,medium
