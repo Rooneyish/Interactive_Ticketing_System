@@ -15,11 +15,11 @@ def menu():
         
         if choice == "1":
             display(data)
-        if choice == "2":
+        elif choice == "2":
             dashboard(data)
-        if choice == "3":
+        elif choice == "3":
             add_tickets()
-        if choice == "4":  
+        elif choice == "4":  
             while True:
                 ticket_id = input("Enter the Ticket ID to Update: ").strip()
                 if ticket_id == "":
@@ -27,9 +27,9 @@ def menu():
                 elif not ticket_id.isdigit():
                     print("Ticket ID must be a number. Try again.")
                 else:
-                    update_ticket(ticket_id)
+                    update_ticket(int(ticket_id))
                     break
-        if choice == "5":  
+        elif choice == "5":  
             while True:
                 ticket_id = input("Enter the Ticket ID to Delete: ").strip()
                 if ticket_id == "":
@@ -37,10 +37,16 @@ def menu():
                 elif not ticket_id.isdigit():
                     print("Ticket ID must be a number. Try again.")
                 else:
-                    delete_ticket(ticket_id)
+                    delete_ticket(int(ticket_id))
                     break
 
 
-        if choice == "0":
+        elif choice == "0":
+            print("Exiting Help Desk Ticket System. \n")
+            print("System Logged Out. Thank You!!")
             return
-menu()
+        else:
+            print("Invalid Choice. Please Try Again!")
+
+if __name__ == "__main__":
+    menu()
