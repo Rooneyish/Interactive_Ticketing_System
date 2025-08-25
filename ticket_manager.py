@@ -3,6 +3,8 @@ from data_structures.priority_queue import PriorityQueue
 from data_structures.stack import Stack
 from data_structures.linked_list import LinkedList
 
+undo_stack= Stack()
+
 def display(table):
     columns = list(zip(*table))
     col_widths =[]
@@ -80,10 +82,14 @@ def add_tickets():
         else: 
             priority = "low" if priority == "l" else "medium" if priority == 'm' else 'high'
             break
+
+    new_ticket = [str(new_id), title, status, priority]
     
     file = open("tickets.txt", 'a')
     file.write(f"\n{new_id},{title},{status},{priority}")
     file.close()
+
+    undo_stack.push(("add",new_ticket, None))
 
     print("Ticket added successfully!")
 
@@ -98,6 +104,7 @@ def delete_ticket(ticket_id):
     header = table[0]
     found = False
     kept_rows = [header]
+    deleted_row = None
 
     for row in table[1:]:
         if len(row) == 0:
@@ -105,6 +112,7 @@ def delete_ticket(ticket_id):
         
         if row[0].strip() == ticket_id:
             found = True
+            deleted_row = row
             continue
         
         kept_rows.append(row)
@@ -112,6 +120,9 @@ def delete_ticket(ticket_id):
     if not found:
         print(f'Ticket {ticket_id} not found.')
         return False
+    
+    if undo_stack and deleted_row:
+        undo_stack.push(("delete", deleted_row, None))
     
     file = open('tickets.txt', 'w')
     for row in kept_rows:
@@ -130,6 +141,8 @@ def update_ticket(ticket_id):
         if len(row) > 0 and row[0] == ticket_id:
             print("Current Ticket Details: \n")
             print(row)
+            
+            old_row = row.copy()
 
             while True:
                 new_description = input(f"Enter new description (current: {row[1]}): \n").lower().strip()
@@ -161,12 +174,12 @@ def update_ticket(ticket_id):
                     new_status = "open" if new_status == "o" else "closed"
                     break
 
-            if new_description.strip():
-                row[1]= new_description
-            if new_priority.strip():
-                row[3]= new_priority
-            if new_status.strip():
-                row[2]= new_status
+            row[1] = new_description
+            row[2] = new_status
+            row[3] = new_priority
+
+            if undo_stack:
+                undo_stack.push(("update", row.copy(), old_row))
             
             updated = True
             break
@@ -221,3 +234,28 @@ def process_next_ticket():
     file = open("tickets.txt", "w")
     for row in table:
         file.write(",". join(row)+ "\n")
+
+def undo_last_action():
+    if undo_stack.is_empty():
+        print("Nothing to UNDO.")
+        return
+    
+    action, ticket, old_ticket = undo_stack.pop()
+    table = collection()
+
+    if action == "add":
+        table = [row for row in table if row[0] != ticket[0]]
+        print(f"Undo Add: Ticket ID {ticket[0]} removed.")
+    elif action == "update":
+        for idx,row in enumerate(table):
+            if row[0] == ticket[0]:
+                table[idx] = old_ticket
+                print(f"Undo Update: Ticket ID {ticket[0]} restored.")
+                break
+    elif action == "delete":
+        table.append(ticket)
+        print(f"Undo Delete: Ticket ID {ticket[0]} restored.")
+
+    file = open('tickets.txt', "w")
+    for row in table:
+        file.write(",".join(row)+"\n")
