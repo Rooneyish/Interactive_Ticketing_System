@@ -1,9 +1,10 @@
 from data_structures.queue import Queue
 from data_structures.priority_queue import PriorityQueue
 from data_structures.stack import Stack
-from data_structures.linked_list import LinkedList
+from data_structures.linked_list import LinkedList, Element
 
 undo_stack= Stack()
+history_list = LinkedList()
 
 def display(table):
     columns = list(zip(*table))
@@ -19,6 +20,11 @@ def display(table):
             if i < len(row)-1:
                 line += " | "
         print(line)
+
+    if history_list:
+        new_element = Element(action="display", ticket_id = None, new_ticket=None,old_ticket = None)
+        history_list.append(new_element)
+
 
 def collection():
     file = open("tickets.txt", "r")
@@ -52,6 +58,10 @@ def dashboard(data):
     for priority, count in priority_counts.items():
         print(f"  {priority.capitalize():<7}: {count}")
     print("="*40)
+
+    if history_list:
+        new_element = Element(action="dashboard", ticket_id = None, new_ticket=None,old_ticket = None)
+        history_list.append(new_element)
 
 def add_tickets():
     table = collection()
@@ -93,6 +103,10 @@ def add_tickets():
 
     print("Ticket added successfully!")
 
+    if history_list:
+        new_element = Element(action="add", ticket_id = new_ticket[0], new_ticket=new_ticket,old_ticket = None)
+        history_list.append(new_element)
+        
 def delete_ticket(ticket_id):
     ticket_id = str(ticket_id).strip()
 
@@ -129,6 +143,11 @@ def delete_ticket(ticket_id):
         file.write(",".join(row)+"\n")
 
     print(f'Ticket {ticket_id} deleted successfully.')
+
+    if history_list and deleted_row:
+        new_element = Element(action="delete", ticket_id = ticket_id, new_ticket=delete_ticket,old_ticket = None)
+        history_list.append(new_element)
+    
     return True
 
 def update_ticket(ticket_id):
@@ -192,6 +211,10 @@ def update_ticket(ticket_id):
     else:
         print("Ticket not found.")
     
+    if history_list:
+        new_element = Element(action="update", ticket_id = ticket_id, new_ticket=row.copy(),old_ticket = old_row)
+        history_list.append(new_element)
+
     return updated
 
 def process_next_ticket():
@@ -201,6 +224,9 @@ def process_next_ticket():
     high_priority_queue = PriorityQueue()
 
     for row in table[1:]:
+        if len(row) < 4:  
+            continue
+        
         ticket_id, title, status, priority = row
         if status.lower() == 'closed':
             continue
@@ -223,6 +249,8 @@ def process_next_ticket():
     print(f"Priority: {ticket[3]}")
     print(f"Status  : {ticket[2]}")
 
+    old_ticket = ticket.copy()
+
     ticket[2] = "closed"
     print(f'Ticket {ticket[0]} is now CLOSED.')
 
@@ -234,6 +262,10 @@ def process_next_ticket():
     file = open("tickets.txt", "w")
     for row in table:
         file.write(",". join(row)+ "\n")
+    
+    if history_list:
+        new_element = Element(action="process", ticket_id = ticket[0], new_ticket=ticket.copy(),old_ticket = old_ticket)
+        history_list.append(new_element)
 
 def undo_last_action():
     if undo_stack.is_empty():
@@ -259,3 +291,37 @@ def undo_last_action():
     file = open('tickets.txt', "w")
     for row in table:
         file.write(",".join(row)+"\n")
+
+
+    if history_list:
+        new_element = Element(action="undo", ticket_id = ticket[0], new_ticket=None,old_ticket = (action, ticket, old_ticket))
+        history_list.append(new_element)
+
+def display_history(history_list):
+    if history_list.head is None:
+        print("No history available.")
+        return
+
+    print("\n===== Ticket Action History =====")
+    print("=" * 40)
+
+    current = history_list.head
+    count = 1
+    while current:
+        action = current.action
+        ticket_id = current.ticket_id
+        new_ticket = current.new_ticket
+        old_ticket = current.old_ticket
+
+        description = f"{count}. Action: {action.upper()}, Ticket ID: {ticket_id}"
+        
+        if new_ticket:
+            description += f", New: {new_ticket}"
+        if old_ticket:
+            description += f", Old: {old_ticket}"
+
+        print(description)
+        current = current.next
+        count += 1
+
+    print("=" * 40)

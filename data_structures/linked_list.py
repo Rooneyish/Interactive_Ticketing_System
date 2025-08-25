@@ -1,6 +1,9 @@
 class Element:
-    def __init__(self, value):
-        self.value = value
+    def __init__(self, action, ticket_id = None, new_ticket=None, old_ticket= None):
+        self.action= action
+        self.ticket_id = ticket_id
+        self.new_ticket = new_ticket
+        self.old_ticket = old_ticket
         self.next = None
 
 
@@ -34,11 +37,11 @@ class LinkedList:
             new_element.next = current.next
             current.next = new_element
 
-    def delete(self, value):
+    def delete(self, ticket_id):
         current = self.head
         previous = None
         while current:
-            if current.value == value:
+            if current.ticket_id == ticket_id:
                 if previous:
                     previous.next = current.next
                 else:
@@ -47,10 +50,10 @@ class LinkedList:
             previous = current
             current = current.next
 
-    def find(self, value):
+    def find(self, ticket_id):
         current = self.head
         while current:
-            if current.value == value:
+            if current.ticket_id == ticket_id:
                 return True
             current = current.next
         return False
@@ -83,7 +86,6 @@ class LinkedList:
             current = next_node
             self.head = previous
 
-    # Function for Task 8
     def to_list(self):
         python_list = []
         current = self.head
@@ -92,10 +94,14 @@ class LinkedList:
             current = current.next
         return python_list
 
-    def display(self):
-        elements = []
+    def display_history(self):
+        if not self.head:
+            print("No ticket history found.")
+            return
+        
         current = self.head
+        print("\n===== Ticket History =====")
         while current:
-            elements.append(current.value)
+            print(f"Ticket ID: {current.ticket_id} | Action: {current.action} | Details: {current.details}")
             current = current.next
-        print(" -> ".join(map(str, elements)))
+        print("==========================\n")

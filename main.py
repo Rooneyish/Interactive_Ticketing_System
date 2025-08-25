@@ -1,4 +1,4 @@
-from ticket_manager import display, collection, dashboard, add_tickets, undo_last_action, update_ticket, delete_ticket, process_next_ticket
+from ticket_manager import display, collection, dashboard,history_list,display_history, add_tickets, undo_last_action, update_ticket, delete_ticket, process_next_ticket
 
 def menu():
     while True:
@@ -10,6 +10,7 @@ def menu():
         print("5. Delete Ticket")
         print("6. Process Next Ticket")
         print("7. Undo Last Action")
+        print("8. History")
         print("0. Exit")
 
         choice = input("Enter your choice: ")
@@ -45,6 +46,8 @@ def menu():
             process_next_ticket()
         elif choice == "7":
             undo_last_action()
+        elif choice == "8":
+            display_history(history_list)
         elif choice == "0":
             print("Exiting Help Desk Ticket System. \n")
             print("System Logged Out. Thank You!!")
