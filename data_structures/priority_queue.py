@@ -2,7 +2,10 @@ class PriorityQueue:
     def __init__(self):
         self.items = []
     
-    def is_empty(self, item, priority):
+    def is_empty(self):
+        return len(self.items) == 0
+
+    def enqueue(self, item, priority):
         new_item = (priority, item)
         if self.is_empty():
             self.items.append(new_item)

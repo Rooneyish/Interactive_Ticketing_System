@@ -1,3 +1,8 @@
+from data_structures.queue import Queue
+from data_structures.priority_queue import PriorityQueue
+from data_structures.stack import Stack
+from data_structures.linked_list import LinkedList
+
 def display(table):
     columns = list(zip(*table))
     col_widths =[]
@@ -175,3 +180,44 @@ def update_ticket(ticket_id):
         print("Ticket not found.")
     
     return updated
+
+def process_next_ticket():
+    table = collection()
+    
+    normal_queue = Queue()
+    high_priority_queue = PriorityQueue()
+
+    for row in table[1:]:
+        ticket_id, title, status, priority = row
+        if status.lower() == 'closed':
+            continue
+        if priority.lower() == 'high':
+            high_priority_queue.enqueue(row, 3)
+        else:
+            normal_queue.enqueue(row)
+    
+    if not high_priority_queue.is_empty():
+        ticket = high_priority_queue.dequeue()
+    elif not normal_queue.is_empty():
+        ticket = normal_queue.dequeue()
+    else:
+        print("No open tickets to process.")
+        return
+    
+    print("Processing Ticket: \n")
+    print(f"ID      : {ticket[0]}")
+    print(f"Title   : {ticket[1]}")
+    print(f"Priority: {ticket[3]}")
+    print(f"Status  : {ticket[2]}")
+
+    ticket[2] = "closed"
+    print(f'Ticket {ticket[0]} is now CLOSED.')
+
+    for idx, row in enumerate(table):
+        if len(row) > 0 and row[0] == ticket[0]:
+            table[idx] = ticket
+            break
+
+    file = open("tickets.txt", "w")
+    for row in table:
+        file.write(",". join(row)+ "\n")
