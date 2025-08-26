@@ -49,7 +49,7 @@ def menu():
         elif choice == "8":
             display_history(history_list)
         elif choice == "0":
-            print("Exiting Help Desk Ticket System. \n")
+            print("\n Exiting Help Desk Ticket System. \n")
             print("System Logged Out. Thank You!!")
             return
         else:

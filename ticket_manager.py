@@ -12,7 +12,7 @@ def display(table):
     for col in columns:
         max_len = max(len(item) for item in col)
         col_widths.append(max_len)
-
+    print("\n Displaying Ticket Details: \n")
     for row in table:
         line = "| "
         for i, item in enumerate(row):
@@ -69,18 +69,23 @@ def add_tickets():
     exiting_ids = [int(row[0]) for row in table[1:]]
 
     new_id = max(exiting_ids) + 1 if exiting_ids else 1
-
+    print("\n Add Ticket: \n")
+    print("Enter '/' to Dismiss. \n")
     while True:
         title = input("Enter Title: ")
         if title == "":
             print("Title cannot be empty.")
-        else: 
+        elif title == "/": 
+            return
+        else:
             break
     
     while True:
         status = input("Enter Status ('o' for  open/'c' for closed): ").lower()
         if status not in ["o", "c"]:
             print("Invalid status. Enter 'o' or 'c'")
+        elif title == "/": 
+            return
         else:
             status = "open" if status == "o" else "closed"
             break
@@ -89,6 +94,8 @@ def add_tickets():
         priority = input("Enter Priority ('l' for low/ 'm' for medium/'h' for high): ").lower()
         if priority not in ["l", "m", "h"]:
             print("Invalid priority. Enter 'l', 'm' or 'h'")
+        elif title == "/": 
+            return
         else: 
             priority = "low" if priority == "l" else "medium" if priority == 'm' else 'high'
             break
@@ -108,6 +115,7 @@ def add_tickets():
         history_list.append(new_element)
         
 def delete_ticket(ticket_id):
+    print("\n Deleting Ticket \n")
     ticket_id = str(ticket_id).strip()
 
     table = collection()
@@ -145,16 +153,18 @@ def delete_ticket(ticket_id):
     print(f'Ticket {ticket_id} deleted successfully.')
 
     if history_list and deleted_row:
-        new_element = Element(action="delete", ticket_id = ticket_id, new_ticket=delete_ticket,old_ticket = None)
+        new_element = Element(action="delete", ticket_id = ticket_id, new_ticket=deleted_row,old_ticket = None)
         history_list.append(new_element)
     
     return True
 
 def update_ticket(ticket_id):
+    print("\n Updating Ticket \n")
     ticket_id = str(ticket_id).strip()
 
     table = collection()
     updated = False
+    old_row = None
 
     for row in table:
         if len(row) > 0 and row[0] == ticket_id:
