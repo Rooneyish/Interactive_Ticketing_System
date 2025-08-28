@@ -1,4 +1,4 @@
-Id, Title, Status, Priority
+Id,Title,Status,Priority
 1,Login issue,closed,high
 6,Server crash,closed,high
 7,Feature request,closed,low
@@ -8,5 +8,4 @@ Id, Title, Status, Priority
 11,Game Crash,open,low
 12,Plane Crash,closed,high
 14,Mobile Display Crash,open,medium
-15,Sign In Issue,open,high
-16,Auto Logout ,open,high
+16,Auto Logout,open,high

@@ -7,11 +7,20 @@ undo_stack= Stack()
 history_list = LinkedList()
 
 def display(table):
+    if not table:
+        print("No tickets to display.")
+        return
+    
+    max_len_row = max(len(row) for row in table)
+    table = [row + [""] * (max_len_row - len(row)) for row in table]
+    
     columns = list(zip(*table))
     col_widths =[]
+    
     for col in columns:
         max_len = max(len(item) for item in col)
         col_widths.append(max_len)
+    
     print("\n Displaying Ticket Details: \n")
     for row in table:
         line = "| "
@@ -30,8 +39,11 @@ def collection():
     file = open("tickets.txt", "r")
     dataList = []
     for eachLine in file:
-        eachLine = eachLine.strip().split(",")
-        dataList.append(eachLine)
+        eachLine = eachLine.strip()
+        if not eachLine:
+            continue
+        row = [item.strip() for item in eachLine.split(',')]
+        dataList.append(row)
     file.close()
     return dataList
 
@@ -300,7 +312,7 @@ def undo_last_action():
 
     file = open('tickets.txt', "w")
     for row in table:
-        file.write(",".join(row)+"\n")
+        file.write(",".join(item.strip() for item in row) + "\n")
 
 
     if history_list:
